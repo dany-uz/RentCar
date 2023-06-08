@@ -1,70 +1,94 @@
 {
-    "users": [
-        {
-            "id": 1,
-            "username": "johnDoe",
-            "name": "John Doe",
-            "password": "password123",
-            "role": "admin",
-            "reservword": "secret"
-        },
-        {
-            "id": 2,
-            "username": "janeSmith",
-            "name": "Jane Smith",
-            "password": "pass456",
-            "role": "user",
-            "reservword": "private"
-        }
-    ],
-    "cars": [
-        {
-            "id": 1,
-            "platenumber": "ABC123",
-            "brand": "Toyota",
-            "state": "available",
-            "dailyvalue": 50
-        },
-        {
-            "id": 2,
-            "platenumber": "DEF456",
-            "brand": "Honda",
-            "state": "rented",
-            "dailyvalue": 60
-        }
-    ],
-    "rents": [
-        {
-            "id": 1,
-            "rentnumber": "R001",
-            "username": "johnDoe",
-            "platenumber": "ABC123",
-            "initialdate": "2023-06-01",
-            "finaldate": "2023-06-05",
-            "status": "active"
-        },
-        {
-            "id": 2,
-            "rentnumber": "R002",
-            "username": "janeSmith",
-            "platenumber": "DEF456",
-            "initialdate": "2023-06-02",
-            "finaldate": "2023-06-06",
-            "status": "completed"
-        }
-    ],
-    "returncars": [
-        {
-            "id": 1,
-            "returnnumber": "RET001",
-            "rentnumber": "R001",
-            "returndate": "2023-06-06"
-        },
-        {
-            "id": 2,
-            "returnnumber": "RET002",
-            "rentnumber": "R002",
-            "returndate": "2023-06-07"
-        }
-    ]
+  "users": [
+    {
+      "id": 1,
+      "username": "johnDoe",
+      "name": "John Doe",
+      "password": "pass123",
+      "role": "admin",
+      "reservedword": "test1"
+    },
+    {
+      "id": 2,
+      "username": "janeSmith",
+      "name": "Jane Smith",
+      "password": "pass456",
+      "role": "user",
+      "reservedword": "test2"
+    },
+    {
+      "id": 3,
+      "username": "danyuz",
+      "name": "Carlos Ospina",
+      "password": "asd123",
+      "role": "admin",
+      "reservedWord": "Pan"
+    },
+    {
+      "id": 4,
+      "username": "danyuz2",
+      "name": "Daniel Guaycha",
+      "password": "asd123",
+      "role": "user",
+      "reservedWord": "Pancito"
+    },
+    {
+      "id": 5,
+      "username": "danyuz3",
+      "name": "Carlos Ospina",
+      "password": "asd123",
+      "role": "user",
+      "reservedWord": "Pansnusnu"
+    }
+  ],
+  "cars": [
+    {
+      "id": 1,
+      "platenumber": "ABC123",
+      "brand": "Toyota",
+      "state": "Disponible",
+      "dailyvalue": 150000
+    },
+    {
+      "id": 2,
+      "platenumber": "DEF456",
+      "brand": "Honda",
+      "state": "No disponible",
+      "dailyvalue": 100000
+    }
+  ],
+  "rents": [
+    {
+      "id": 1,
+      "rentnumber": "R001",
+      "username": "johnDoe",
+      "platenumber": "ABC123",
+      "initialdate": "2023-06-01",
+      "finaldate": "2023-06-05",
+      "status": "Disponible"
+    },
+    {
+      "id": 2,
+      "rentnumber": "R002",
+      "username": "janeSmith",
+      "platenumber": "DEF456",
+      "initialdate": "2023-06-02",
+      "finaldate": "2023-06-06",
+      "status": "Disponible"
+    }
+  ],
+  "returncars": [
+    {
+      "id": 1,
+      "returnnumber": "RET001",
+      "rentnumber": "R001",
+      "returndate": "2023-06-06"
+    },
+    {
+      "id": 2,
+      "returnnumber": "RET002",
+      "rentnumber": "R002",
+      "returndate": "2023-06-07"
+    }
+  ]
 }
