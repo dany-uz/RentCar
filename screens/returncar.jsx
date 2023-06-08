@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useRef } from "react";
-import { View, TextInput, Button, Text } from "react-native";
+import { View, TextInput, Button, Text, TouchableOpacity } from "react-native";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import { showMessage } from "react-native-flash-message";
 import { Picker } from "react-native-web";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const validationSchema = Yup.object().shape({
     returnNumber: Yup.string().required("El número de devolución es requerido"),
@@ -125,7 +126,7 @@ const ReturnCarForm = () => {
                 ...selectedRentObject,
                 status: "Inactivo",
             };
-            
+
             await axios.put(
                 `http://localhost:8000/rents/${selectedRentObject.id}`,
                 updatedRent

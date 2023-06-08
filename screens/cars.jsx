@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useRef } from "react";
-import { View, TextInput, Button, Text } from "react-native";
+import { View, TextInput, Button, Text, TouchableOpacity } from "react-native";
 import { Picker } from "react-native-web";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import { showMessage } from "react-native-flash-message";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const validationSchema = Yup.object().shape({
     platenumber: Yup.string().required("El número de placa es requerido"),
@@ -24,6 +25,23 @@ const Cars = () => {
     useEffect(() => {
         getCars();
     }, []);
+
+    const isLogged = async () => {
+        try {
+            const user = await AsyncStorage.getItem("user");
+            console.log(user);
+            if (!user) {
+                showMessage({
+                    message: "No se ha iniciado sesión",
+                    type: "danger",
+                    icon: "danger",
+                    duration: 3000,
+                });
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     const getCars = async () => {
         try {
@@ -152,124 +170,142 @@ const Cars = () => {
 
     const formikRef = useRef(null);
 
-    return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Gestión de Carros</Text>
-            <Formik
-                innerRef={formikRef}
-                initialValues={{
-                    platenumber: "",
-                    brand: "",
-                    state: "",
-                    dailyvalue: "",
-                }}
-                validationSchema={validationSchema}
-                onSubmit={editMode ? handleEdit : handleAdd}
-            >
-                {({
-                    handleChange,
-                    handleBlur,
-                    handleSubmit,
-                    values,
-                    errors,
-                    touched,
-                }) => (
-                    <>
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Número de Placa"
-                            onChangeText={handleChange("platenumber")}
-                            onBlur={handleBlur("platenumber")}
-                            value={values.platenumber}
-                        />
-                        {touched.platenumber && errors.platenumber && (
-                            <Text style={styles.error}>
-                                {errors.platenumber}
-                            </Text>
-                        )}
-
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Marca"
-                            onChangeText={handleChange("brand")}
-                            onBlur={handleBlur("brand")}
-                            value={values.brand}
-                        />
-                        {touched.brand && errors.brand && (
-                            <Text style={styles.error}>{errors.brand}</Text>
-                        )}
-
-                        {/* El State debe ser un Picker que tiene dos opciones "Disponible" y "No disponible" */}
-
-                        <Picker
-                            selectedValue={values.state}
-                            style={styles.input}
-                            onValueChange={handleChange("state")}
-                        >
-                            <Picker.Item label="Disponible" value="Disponible" />
-                            <Picker.Item label="No disponible" value="No disponible" />
-                        </Picker> 
-
-                        {touched.state && errors.state && (
-                            <Text style={styles.error}>{errors.state}</Text>
-                        )}
-
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Valor Diario"
-                            onChangeText={handleChange("dailyvalue")}
-                            onBlur={handleBlur("dailyvalue")}
-                            value={values.dailyvalue}
-                            keyboardType="numeric"
-                        />
-                        {touched.dailyvalue && errors.dailyvalue && (
-                            <Text style={styles.error}>
-                                {errors.dailyvalue}
-                            </Text>
-                        )}
-
-                        <Button
-                            title={editMode ? "Actualizar" : "Agregar"}
-                            onPress={handleSubmit}
-                        />
-
-                        {editMode && (
-                            <Button
-                                title="Cancelar"
-                                onPress={handleCancelButton}
-                                color="red"
+    if (isLogged()) {
+        return (
+            <View style={styles.container}>
+                <Text style={styles.title}>Mensaje de Administración</Text>
+                <Text style={styles.error}>No se ha iniciado sesión</Text>
+                <TouchableOpacity onPress={() => navigation.navigate("signin")}>
+                    <Text style={styles.link}>Iniciar Sesión</Text>
+                </TouchableOpacity>
+            </View>
+        );
+    } else {
+        return (
+            <View style={styles.container}>
+                <Text style={styles.title}>Gestión de Carros</Text>
+                <Formik
+                    innerRef={formikRef}
+                    initialValues={{
+                        platenumber: "",
+                        brand: "",
+                        state: "",
+                        dailyvalue: "",
+                    }}
+                    validationSchema={validationSchema}
+                    onSubmit={editMode ? handleEdit : handleAdd}
+                >
+                    {({
+                        handleChange,
+                        handleBlur,
+                        handleSubmit,
+                        values,
+                        errors,
+                        touched,
+                    }) => (
+                        <>
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Número de Placa"
+                                onChangeText={handleChange("platenumber")}
+                                onBlur={handleBlur("platenumber")}
+                                value={values.platenumber}
                             />
-                        )}
-                    </>
-                )}
-            </Formik>
+                            {touched.platenumber && errors.platenumber && (
+                                <Text style={styles.error}>
+                                    {errors.platenumber}
+                                </Text>
+                            )}
 
-            <View style={styles.carsContainer}>
-                <Text style={styles.subtitle}>Lista de Carros</Text>
-                {cars.map((car) => (
-                    <View key={car.id} style={styles.carContainer}>
-                        <Text>Número de Placa: {car.platenumber}</Text>
-                        <Text>Marca: {car.brand}</Text>
-                        <Text>Estado: {car.state}</Text>
-                        <Text>Valor Diario: {car.dailyvalue}</Text>
-                        {!editMode && (
-                            <>
-                                <Button
-                                    title="Editar"
-                                    onPress={() => handleEditButton(car)}
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Marca"
+                                onChangeText={handleChange("brand")}
+                                onBlur={handleBlur("brand")}
+                                value={values.brand}
+                            />
+                            {touched.brand && errors.brand && (
+                                <Text style={styles.error}>{errors.brand}</Text>
+                            )}
+
+                            {/* El State debe ser un Picker que tiene dos opciones "Disponible" y "No disponible" */}
+
+                            <Picker
+                                selectedValue={values.state}
+                                style={styles.input}
+                                onValueChange={handleChange("state")}
+                            >
+                                <Picker.Item
+                                    label="Disponible"
+                                    value="Disponible"
                                 />
+                                <Picker.Item
+                                    label="No disponible"
+                                    value="No disponible"
+                                />
+                            </Picker>
+
+                            {touched.state && errors.state && (
+                                <Text style={styles.error}>{errors.state}</Text>
+                            )}
+
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Valor Diario"
+                                onChangeText={handleChange("dailyvalue")}
+                                onBlur={handleBlur("dailyvalue")}
+                                value={values.dailyvalue}
+                                keyboardType="numeric"
+                            />
+                            {touched.dailyvalue && errors.dailyvalue && (
+                                <Text style={styles.error}>
+                                    {errors.dailyvalue}
+                                </Text>
+                            )}
+
+                            <Button
+                                title={editMode ? "Actualizar" : "Agregar"}
+                                onPress={handleSubmit}
+                            />
+
+                            {editMode && (
                                 <Button
-                                    title="Eliminar"
-                                    onPress={() => handleDelete(car.id)}
+                                    title="Cancelar"
+                                    onPress={handleCancelButton}
                                     color="red"
                                 />
-                            </>
-                        )}
-                    </View>
-                ))}
+                            )}
+                        </>
+                    )}
+                </Formik>
+
+                <View style={styles.carsContainer}>
+                    <Text style={styles.subtitle}>Lista de Carros</Text>
+                    {cars.map((car) => (
+                        <View key={car.id} style={styles.carContainer}>
+                            <Text>Número de Placa: {car.platenumber}</Text>
+                            <Text>Marca: {car.brand}</Text>
+                            <Text>Estado: {car.state}</Text>
+                            <Text>Valor Diario: {car.dailyvalue}</Text>
+                            {!editMode && (
+                                <>
+                                    <Button
+                                        title="Editar"
+                                        onPress={() => handleEditButton(car)}
+                                    />
+                                    <Button
+                                        title="Eliminar"
+                                        onPress={() => handleDelete(car.id)}
+                                        color="red"
+                                    />
+                                </>
+                            )}
+                        </View>
+                    ))}
+                </View>
             </View>
-        </View>
-    );
+        );
+    }
 };
 
 const styles = {

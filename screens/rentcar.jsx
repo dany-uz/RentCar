@@ -55,6 +55,23 @@ const RentForm = () => {
         getCars();
     }, []);
 
+    const isLogged = async () => {
+        try {
+            const user = await AsyncStorage.getItem("user");
+            console.log(user);
+            if (!user) {
+                showMessage({
+                    message: "No se ha iniciado sesión",
+                    type: "danger",
+                    icon: "danger",
+                    duration: 3000,
+                });
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     const getCars = async () => {
         try {
             const response = await axios.get(`http://localhost:8000/cars`);
@@ -97,8 +114,8 @@ const RentForm = () => {
             const user = await AsyncStorage.getItem("user");
             const parsedUser = JSON.parse(user);
 
-            values = { 
-                id: auto_id, 
+            values = {
+                id: auto_id,
                 rentnumber: values.rentNumber,
                 username: parsedUser.username,
                 platenumber: values.licensePlate,
@@ -143,102 +160,120 @@ const RentForm = () => {
 
     const formikRef = useRef(null);
 
-    return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Rentar</Text>
-            <Formik
-                innerRef={formikRef}
-                initialValues={{
-                    licensePlate: "",
-                    initialDate: "",
-                    endDate: "",
-                    rentNumber: "",
-                }}
-                validationSchema={validationSchema}
-                onSubmit={handleSave}
-            >
-                {({
-                    handleChange,
-                    handleBlur,
-                    handleSubmit,
-                    values,
-                    errors,
-                    touched,
-                }) => (
-                    <>
-                        <Picker
-                            style={styles.input}
-                            selectedValue={selectedCar}
-                            onValueChange={(itemValue) => {
-                                setSelectedCar(itemValue);
-                                handleChange("licensePlate")(itemValue);
-                            }}
-                        >
-                            <Picker.Item label="Seleccione un vehículo" />
-                            {carOptions.map((car) => (
-                                <Picker.Item
-                                    key={car.id}
-                                    label={car.platenumber}
-                                    value={car.platenumber}
-                                />
-                            ))}
-                        </Picker>
+    if (isLogged()) {
+        return (
+            <View style={styles.container}>
+                <Text style={styles.title}>Mensaje de Administración</Text>
+                <Text style={styles.error}>No se ha iniciado sesión</Text>
+                <TouchableOpacity onPress={() => navigation.navigate("signin")}>
+                    <Text style={styles.link}>Iniciar Sesión</Text>
+                </TouchableOpacity>
+            </View>
+        );
+    } else {
+        return (
+            <View style={styles.container}>
+                <Text style={styles.title}>Rentar</Text>
+                <Formik
+                    innerRef={formikRef}
+                    initialValues={{
+                        licensePlate: "",
+                        initialDate: "",
+                        endDate: "",
+                        rentNumber: "",
+                    }}
+                    validationSchema={validationSchema}
+                    onSubmit={handleSave}
+                >
+                    {({
+                        handleChange,
+                        handleBlur,
+                        handleSubmit,
+                        values,
+                        errors,
+                        touched,
+                    }) => (
+                        <>
+                            <Picker
+                                style={styles.input}
+                                selectedValue={selectedCar}
+                                onValueChange={(itemValue) => {
+                                    setSelectedCar(itemValue);
+                                    handleChange("licensePlate")(itemValue);
+                                }}
+                            >
+                                <Picker.Item label="Seleccione un vehículo" />
+                                {carOptions.map((car) => (
+                                    <Picker.Item
+                                        key={car.id}
+                                        label={car.platenumber}
+                                        value={car.platenumber}
+                                    />
+                                ))}
+                            </Picker>
 
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Fecha Inicial"
-                            onChangeText={(text) => {
-                                const formattedDate = formatDateString(text);
-                                handleChange("initialDate")(formattedDate);
-                            }}
-                            onBlur={handleBlur("initialDate")}
-                            value={values.initialDate}
-                        />
-                        {touched.initialDate && errors.initialDate && (
-                            <Text style={styles.error}>
-                                {errors.initialDate}
-                            </Text>
-                        )}
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Fecha Inicial"
+                                onChangeText={(text) => {
+                                    const formattedDate =
+                                        formatDateString(text);
+                                    handleChange("initialDate")(formattedDate);
+                                }}
+                                onBlur={handleBlur("initialDate")}
+                                value={values.initialDate}
+                            />
+                            {touched.initialDate && errors.initialDate && (
+                                <Text style={styles.error}>
+                                    {errors.initialDate}
+                                </Text>
+                            )}
 
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Fecha Final"
-                            onChangeText={(text) => {
-                                const formattedDate = formatDateString(text);
-                                handleChange("endDate")(formattedDate);
-                            }}
-                            onBlur={handleBlur("endDate")}
-                            value={values.endDate}
-                        />
-                        {touched.endDate && errors.endDate && (
-                            <Text style={styles.error}>{errors.endDate}</Text>
-                        )}
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Fecha Final"
+                                onChangeText={(text) => {
+                                    const formattedDate =
+                                        formatDateString(text);
+                                    handleChange("endDate")(formattedDate);
+                                }}
+                                onBlur={handleBlur("endDate")}
+                                value={values.endDate}
+                            />
+                            {touched.endDate && errors.endDate && (
+                                <Text style={styles.error}>
+                                    {errors.endDate}
+                                </Text>
+                            )}
 
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Número Renta"
-                            onChangeText={handleChange("rentNumber")}
-                            onBlur={handleBlur("rentNumber")}
-                            value={values.rentNumber}
-                        />
-                        {touched.rentNumber && errors.rentNumber && (
-                            <Text style={styles.error}>
-                                {errors.rentNumber}
-                            </Text>
-                        )}
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Número Renta"
+                                onChangeText={handleChange("rentNumber")}
+                                onBlur={handleBlur("rentNumber")}
+                                value={values.rentNumber}
+                            />
+                            {touched.rentNumber && errors.rentNumber && (
+                                <Text style={styles.error}>
+                                    {errors.rentNumber}
+                                </Text>
+                            )}
 
-                        <Button title="Guardar" onPress={handleSubmit} />
-                    </>
-                )}
-            </Formik>
-            <TouchableOpacity>
-                <Text style={styles.link}>Listar vehículos Disponibles</Text>
-            </TouchableOpacity>
-            <TouchableOpacity>
-                <Text style={styles.link}>Cerrar sesión</Text>
-            </TouchableOpacity>
-        </View>
-    );
+                            <Button title="Guardar" onPress={handleSubmit} />
+                        </>
+                    )}
+                </Formik>
+                <TouchableOpacity>
+                    <Text style={styles.link}>
+                        Listar vehículos Disponibles
+                    </Text>
+                </TouchableOpacity>
+                <TouchableOpacity>
+                    <Text style={styles.link}>Cerrar sesión</Text>
+                </TouchableOpacity>
+            </View>
+        );
+    }
 };
 
 const styles = {

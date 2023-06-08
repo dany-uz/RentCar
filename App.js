@@ -8,6 +8,7 @@ import ForgotPasswordForm from './screens/forgotpassword';
 import RentForm from './screens/rentcar';
 import ReturnCarForm from './screens/returncar';
 import Cars from './screens/cars';
+import HomeScreen from './screens/test';
 
 // Import React Navigation
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -39,8 +40,8 @@ const AppTabs = () => {
             iconName = 'ios-wallet';
           } else if (route.name === 'Devolver') {
             iconName = 'ios-car-sport';
-          } else if (route.name === 'Ayuda') {
-            iconName = 'ios-help-circle';
+          } else if (route.name === 'Reestablecer') {
+            iconName = 'ios-lock-closed';
           } else if (route.name === 'Carros') {
             iconName = 'ios-car';
           }
@@ -56,10 +57,11 @@ const AppTabs = () => {
     >
       <Tab.Screen name="Ingresar" component={LoginForm} />
       <Tab.Screen name="Registrarse" component={RegistrationForm} />
-      <Tab.Screen name="Ayuda" component={ForgotPasswordForm} />
+      <Tab.Screen name="Reestablecer" component={ForgotPasswordForm} />
       <Tab.Screen name="Carros" component={Cars} />
       <Tab.Screen name="Rentar" component={RentForm} />
       <Tab.Screen name="Devolver" component={ReturnCarForm} />
+      <Tab.Screen name="Home" component={HomeScreen} />
     </Tab.Navigator>
   );
 }

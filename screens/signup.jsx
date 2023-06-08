@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { View, TextInput, Button, Text, TouchableOpacity } from "react-native";
 import { Formik } from "formik";
+import { Picker } from "react-native-web";
 import * as Yup from "yup";
 import axios from "axios";
 import { showMessage } from "react-native-flash-message";
@@ -119,13 +120,14 @@ const SignupForm = () => {
                             <Text style={styles.error}>{errors.password}</Text>
                         )}
 
-                        <TextInput
+                        <Picker
                             style={styles.input}
-                            placeholder="Rol"
-                            onChangeText={handleChange("role")}
-                            onBlur={handleBlur("role")}
-                            value={values.role}
-                        />
+                            selectedValue={values.role}
+                            onValueChange={handleChange("role")}
+                        >
+                            <Picker.Item label="Administrador" value="admin" />
+                            <Picker.Item label="Usuario" value="user" />
+                        </Picker>
                         {touched.role && errors.role && (
                             <Text style={styles.error}>{errors.role}</Text>
                         )}
