@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { View, TextInput, Button, Text } from "react-native";
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -7,7 +7,7 @@ import { showMessage } from "react-native-flash-message";
 
 const validationSchema = Yup.object().shape({
     username: Yup.string().required("El nombre de usuario es requerido"),
-    reservedWord: Yup.string().required("La palabra reservada es requerida"),
+    reservedword: Yup.string().required("La palabra reservada es requerida"),
     newPassword: Yup.string().required("La nueva contraseña es requerida"),
 });
 
@@ -19,7 +19,6 @@ const ForgotPasswordForm = () => {
     const getUsers = async () => {
         try {
             const response = await axios.get(`http://localhost:8000/users`);
-            console.log(response.data);
         } catch (error) {
             console.log(error.message);
         }
@@ -42,8 +41,8 @@ const ForgotPasswordForm = () => {
                 return;
             }
 
-            const { username, reservedWord, newPassword } = values;
-            if (userExists.data[0].reservword !== reservedWord) {
+            const { reservedword, newPassword } = values;
+            if (userExists.data[0].reservedword !== reservedword) {
                 showMessage({
                     message: "La palabra reservada no coincide",
                     type: "danger",
@@ -54,7 +53,7 @@ const ForgotPasswordForm = () => {
             }
 
             // Restablecer la contraseña
-            
+
             const response = await axios.put(
                 `http://localhost:8000/users/${userExists.data[0].id}`,
                 {
@@ -69,6 +68,8 @@ const ForgotPasswordForm = () => {
                 icon: "success",
                 duration: 3000,
             });
+
+            formikRef.current.resetForm();
         } catch (error) {
             showMessage({
                 message: "Error al restablecer la contraseña",
@@ -79,13 +80,16 @@ const ForgotPasswordForm = () => {
         }
     };
 
+    const formikRef = useRef(null);
+
     return (
         <View style={styles.container}>
             <Text style={styles.title}>¿Olvidaste la Contraseña?</Text>
             <Formik
+                innerRef={formikRef}
                 initialValues={{
                     username: "",
-                    reservedWord: "",
+                    reservedword: "",
                     newPassword: "",
                 }}
                 validationSchema={validationSchema}
@@ -114,13 +118,13 @@ const ForgotPasswordForm = () => {
                         <TextInput
                             style={styles.input}
                             placeholder="Palabra Reservada"
-                            onChangeText={handleChange("reservedWord")}
-                            onBlur={handleBlur("reservedWord")}
-                            value={values.reservedWord}
+                            onChangeText={handleChange("reservedword")}
+                            onBlur={handleBlur("reservedword")}
+                            value={values.reservedword}
                         />
-                        {touched.reservedWord && errors.reservedWord && (
+                        {touched.reservedword && errors.reservedword && (
                             <Text style={styles.error}>
-                                {errors.reservedWord}
+                                {errors.reservedword}
                             </Text>
                         )}
 

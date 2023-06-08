@@ -54,7 +54,6 @@ const LoginForm = () => {
         }
     };
 
-    const flashMessage = useRef(null);
     const formikRef = useRef(null);
 
     return (

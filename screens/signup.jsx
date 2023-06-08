@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { View, TextInput, Button, Text, TouchableOpacity } from "react-native";
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -15,7 +15,7 @@ const validationSchema = Yup.object().shape({
         )
         .required("La contraseña es requerida"),
     role: Yup.string().required("El rol es requerido"),
-    reservedWord: Yup.string().required("La palabra reservada es requerida"),
+    reservedword: Yup.string().required("La palabra reservada es requerida"),
 });
 
 const SignupForm = () => {
@@ -40,12 +40,14 @@ const SignupForm = () => {
                     icon: "success",
                     duration: 3000,
                 });
-                
-                values = { id : response.data.length, ...values };
+
+                values = { id: response.data.length, ...values };
                 const registrationResponse = await axios.post(
                     `http://localhost:8000/users`,
                     values
                 );
+
+                formikRef.current.resetForm();
             }
         } catch (error) {
             showMessage({
@@ -57,16 +59,19 @@ const SignupForm = () => {
         }
     };
 
+    const formikRef = useRef(null);
+
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Registro de Usuario</Text>
             <Formik
+                innerRef={formikRef}
                 initialValues={{
                     username: "",
                     name: "",
                     password: "",
                     role: "",
-                    reservedWord: "",
+                    reservedword: "",
                 }}
                 validationSchema={validationSchema}
                 onSubmit={handleRegistration}
@@ -128,13 +133,13 @@ const SignupForm = () => {
                         <TextInput
                             style={styles.input}
                             placeholder="Palabra Reservada"
-                            onChangeText={handleChange("reservedWord")}
-                            onBlur={handleBlur("reservedWord")}
-                            value={values.reservedWord}
+                            onChangeText={handleChange("reservedword")}
+                            onBlur={handleBlur("reservedword")}
+                            value={values.reservedword}
                         />
-                        {touched.reservedWord && errors.reservedWord && (
+                        {touched.reservedword && errors.reservedword && (
                             <Text style={styles.error}>
-                                {errors.reservedWord}
+                                {errors.reservedword}
                             </Text>
                         )}
 
