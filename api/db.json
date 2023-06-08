@@ -22,23 +22,7 @@
       "name": "Carlos Ospina",
       "password": "asd123",
       "role": "admin",
-      "reservedWord": "Pan"
-    },
-    {
-      "id": 4,
-      "username": "danyuz2",
-      "name": "Daniel Guaycha",
-      "password": "asd123",
-      "role": "user",
-      "reservedWord": "Pancito"
-    },
-    {
-      "id": 5,
-      "username": "danyuz3",
-      "name": "Carlos Ospina",
-      "password": "asd123",
-      "role": "user",
-      "reservedWord": "Pansnusnu"
+      "reservedword": "Pan"
     }
   ],
   "cars": [
@@ -53,8 +37,15 @@
       "id": 2,
       "platenumber": "DEF456",
       "brand": "Honda",
-      "state": "No disponible",
+      "state": "Disponible",
       "dailyvalue": 100000
+    },
+    {
+      "id": 3,
+      "platenumber": "OMG254",
+      "brand": "Renault",
+      "state": "Disponible",
+      "dailyvalue": "150000"
     }
   ],
   "rents": [
@@ -65,7 +56,7 @@
       "platenumber": "ABC123",
       "initialdate": "2023-06-01",
       "finaldate": "2023-06-05",
-      "status": "Disponible"
+      "status": "Inactivo"
     },
     {
       "id": 2,
@@ -74,21 +65,21 @@
       "platenumber": "DEF456",
       "initialdate": "2023-06-02",
       "finaldate": "2023-06-06",
-      "status": "Disponible"
+      "status": "Inactivo"
     }
   ],
   "returncars": [
     {
       "id": 1,
-      "returnnumber": "RET001",
-      "rentnumber": "R001",
+      "returnnumber": "1645",
+      "rentnumber": "R002",
       "returndate": "2023-06-06"
     },
     {
       "id": 2,
-      "returnnumber": "RET002",
-      "rentnumber": "R002",
-      "returndate": "2023-06-07"
+      "returnnumber": "6251",
+      "rentnumber": "R001",
+      "returndate": "2023-06-05"
     }
   ]
 }

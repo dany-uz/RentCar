@@ -4,9 +4,10 @@ import { StyleSheet, Text, View } from 'react-native';
 // Import the screens
 import LoginForm from './screens/signin';
 import RegistrationForm from './screens/signup';
-import RentForm from './screens/rentcar';
 import ForgotPasswordForm from './screens/forgotpassword';
+import RentForm from './screens/rentcar';
 import ReturnCarForm from './screens/returncar';
+import Cars from './screens/cars';
 
 // Import React Navigation
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -14,6 +15,9 @@ import { NavigationContainer } from '@react-navigation/native';
 
 // Import Icon from Ionicons
 import { Ionicons } from '@expo/vector-icons';
+
+// Import FlashMessage
+import FlashMessage from "react-native-flash-message";
 
 // Create the navigator
 const Tab = createBottomTabNavigator();
@@ -27,16 +31,18 @@ const AppTabs = () => {
           let iconName;
 
           // Set the icon based on the tab route
-          if (route.name === 'Sign In') {
+          if (route.name === 'Ingresar') {
             iconName = 'ios-log-in';
-          } else if (route.name === 'Sign Up') {
+          } else if (route.name === 'Registrarse') {
             iconName = 'ios-person-add';
-          } else if (route.name === 'Rent Car') {
-            iconName = 'ios-car';
-          } else if (route.name === 'Return Car') {
+          } else if (route.name === 'Rentar') {
+            iconName = 'ios-wallet';
+          } else if (route.name === 'Devolver') {
             iconName = 'ios-car-sport';
-          } else if (route.name === 'Forgot Password') {
+          } else if (route.name === 'Ayuda') {
             iconName = 'ios-help-circle';
+          } else if (route.name === 'Carros') {
+            iconName = 'ios-car';
           }
 
           // Return the icon component
@@ -48,11 +54,12 @@ const AppTabs = () => {
         inactiveTintColor: 'gray',
       }}
     >
-      <Tab.Screen name="Sign In" component={LoginForm} />
-      <Tab.Screen name="Sign Up" component={RegistrationForm} />
-      <Tab.Screen name="Rent Car" component={RentForm} />
-      <Tab.Screen name="Return Car" component={ReturnCarForm} />
-      <Tab.Screen name="Forgot Password" component={ForgotPasswordForm} />
+      <Tab.Screen name="Ingresar" component={LoginForm} />
+      <Tab.Screen name="Registrarse" component={RegistrationForm} />
+      <Tab.Screen name="Ayuda" component={ForgotPasswordForm} />
+      <Tab.Screen name="Carros" component={Cars} />
+      <Tab.Screen name="Rentar" component={RentForm} />
+      <Tab.Screen name="Devolver" component={ReturnCarForm} />
     </Tab.Navigator>
   );
 }
@@ -60,6 +67,7 @@ const AppTabs = () => {
 const App = () => {
   return (
     <NavigationContainer>
+      <FlashMessage position="top" />
       <AppTabs />
     </NavigationContainer>
   );
