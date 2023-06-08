@@ -1,50 +1,154 @@
-import React, { useState } from "react";
-import { View, TextInput, Button, Text } from "react-native";
+import React, { useEffect } from "react";
+import { View, TextInput, Button, Text, TouchableOpacity } from "react-native";
+import { Formik } from "formik";
+import * as Yup from "yup";
+import axios from "axios";
+import { showMessage } from "react-native-flash-message";
 
-const RegistrationForm = () => {
-    const [username, setUsername] = useState("");
-    const [name, setName] = useState("");
-    const [role, setRole] = useState("");
-    const [reservedWord, setReservedWord] = useState("");
+const validationSchema = Yup.object().shape({
+    username: Yup.string().required("El nombre de usuario es requerido"),
+    name: Yup.string().required("El nombre es requerido"),
+    password: Yup.string()
+        .matches(
+            /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$/,
+            "La contraseña debe contener al menos una letra y un número"
+        )
+        .required("La contraseña es requerida"),
+    role: Yup.string().required("El rol es requerido"),
+    reservedWord: Yup.string().required("La palabra reservada es requerida"),
+});
 
-    const handleRegistration = () => {
-        // Lógica para registrar al usuario utilizando los datos ingresados
-        console.log("Registrarse");
+const SignupForm = () => {
+    const handleRegistration = async (values) => {
+        try {
+            const response = await axios.get(
+                `http://localhost:8000/users?username=${values.username}`
+            );
+
+            if (response.data.length > 0) {
+                showMessage({
+                    message: "El usuario ya existe",
+                    type: "danger",
+                    icon: "danger",
+                    duration: 3000,
+                });
+                return;
+            } else {
+                showMessage({
+                    message: "Usuario registrado correctamente",
+                    type: "success",
+                    icon: "success",
+                    duration: 3000,
+                });
+                
+                values = { id : response.data.length, ...values };
+                const registrationResponse = await axios.post(
+                    `http://localhost:8000/users`,
+                    values
+                );
+            }
+        } catch (error) {
+            showMessage({
+                message: "Error en el registro",
+                type: "danger",
+                icon: "danger",
+                duration: 3000,
+            });
+        }
     };
 
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Registro de Usuario</Text>
-            <TextInput
-                style={styles.input}
-                placeholder="Usuario"
-                value={username}
-                onChangeText={setUsername}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Nombre"
-                value={name}
-                onChangeText={setName}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Rol"
-                value={role}
-                onChangeText={setRole}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Palabra Reservada"
-                value={reservedWord}
-                onChangeText={setReservedWord}
-            />
-            <Button title="Registrarse" onPress={handleRegistration} />
+            <Formik
+                initialValues={{
+                    username: "",
+                    name: "",
+                    password: "",
+                    role: "",
+                    reservedWord: "",
+                }}
+                validationSchema={validationSchema}
+                onSubmit={handleRegistration}
+            >
+                {({
+                    handleChange,
+                    handleBlur,
+                    handleSubmit,
+                    values,
+                    errors,
+                    touched,
+                }) => (
+                    <>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Usuario"
+                            onChangeText={handleChange("username")}
+                            onBlur={handleBlur("username")}
+                            value={values.username}
+                        />
+                        {touched.username && errors.username && (
+                            <Text style={styles.error}>{errors.username}</Text>
+                        )}
+
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Nombre"
+                            onChangeText={handleChange("name")}
+                            onBlur={handleBlur("name")}
+                            value={values.name}
+                        />
+                        {touched.name && errors.name && (
+                            <Text style={styles.error}>{errors.name}</Text>
+                        )}
+
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Contraseña"
+                            secureTextEntry
+                            onChangeText={handleChange("password")}
+                            onBlur={handleBlur("password")}
+                            value={values.password}
+                        />
+                        {touched.password && errors.password && (
+                            <Text style={styles.error}>{errors.password}</Text>
+                        )}
+
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Rol"
+                            onChangeText={handleChange("role")}
+                            onBlur={handleBlur("role")}
+                            value={values.role}
+                        />
+                        {touched.role && errors.role && (
+                            <Text style={styles.error}>{errors.role}</Text>
+                        )}
+
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Palabra Reservada"
+                            onChangeText={handleChange("reservedWord")}
+                            onBlur={handleBlur("reservedWord")}
+                            value={values.reservedWord}
+                        />
+                        {touched.reservedWord && errors.reservedWord && (
+                            <Text style={styles.error}>
+                                {errors.reservedWord}
+                            </Text>
+                        )}
+
+                        <Button title="Registrarse" onPress={handleSubmit} />
+                    </>
+                )}
+            </Formik>
+            <TouchableOpacity>
+                <Text style={styles.link}>¿Ya tienes una cuenta?</Text>
+            </TouchableOpacity>
         </View>
     );
 };
 
-// Styles
 const styles = {
     container: {
         flex: 1,
@@ -65,10 +169,14 @@ const styles = {
         marginBottom: 8,
         paddingHorizontal: 8,
     },
+    error: {
+        color: "red",
+        marginBottom: 8,
+    },
     link: {
         color: "blue",
         marginTop: 8,
     },
 };
 
-export default RegistrationForm;
+export default SignupForm;
