@@ -12,17 +12,6 @@ const validationSchema = Yup.object().shape({
 });
 
 const ForgotPasswordForm = () => {
-    useEffect(() => {
-        getUsers();
-    }, []);
-
-    const getUsers = async () => {
-        try {
-            const response = await axios.get(`http://localhost:8000/users`);
-        } catch (error) {
-            console.log(error.message);
-        }
-    };
 
     const handleResetPassword = async (values) => {
         try {
